@@ -7,8 +7,8 @@ import tech.ada.banco.exception.ValorInvalidoException;
 import tech.ada.banco.model.Conta;
 import tech.ada.banco.service.operacao.OperacaoBancaria;
 
-public interface Transferencia extends OperacaoBancaria {
+public interface Transferencia<T extends Conta> extends OperacaoBancaria {
 	
-	void transferir(BigDecimal valor, Conta contaOrigem, Conta contaDestino) throws SaldoIndisponivelException, ValorInvalidoException;
+	void transferir(BigDecimal valor, T contaOrigem, T contaDestino) throws SaldoIndisponivelException, ValorInvalidoException;
 
 }

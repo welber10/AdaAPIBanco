@@ -33,9 +33,11 @@ public class ClienteService {
 
     public ClienteDTO atualizar(Long id, ClienteDTO clienteDTO) {
         var cliente = this.clienteRepository.findById(id).orElseThrow();
-        cliente.setCpf(clienteDTO.getCpf());
+
+        //cliente.setCpf(clienteDTO.getCpf());
         cliente.setNome(clienteDTO.getNome());
-        cliente.setDataNascimento(clienteDTO.getDataNascimento());
+        //cliente.setDataNascimento(clienteDTO.getDataNascimento());
+
         return this.converDto(clienteRepository.save(cliente));
     }
 

@@ -2,6 +2,7 @@ package tech.ada.banco.service.operacao.saque;
 
 import java.math.BigDecimal;
 
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import tech.ada.banco.repository.ContaRepository;
 
 @Service
 @RequiredArgsConstructor
+@Primary
 public class SaqueConta implements Saque {
 
 	private final ContaRepository repository;

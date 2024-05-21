@@ -2,6 +2,7 @@ package tech.ada.banco.service.operacao.transferencia;
 
 import java.math.BigDecimal;
 
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -12,7 +13,8 @@ import tech.ada.banco.repository.ContaRepository;
 
 @Service
 @RequiredArgsConstructor
-public class TransferenciaBancaria implements Transferencia {
+@Primary
+public class TransferenciaBancaria implements Transferencia<Conta> {
 
 	private final ContaRepository repository;
 
