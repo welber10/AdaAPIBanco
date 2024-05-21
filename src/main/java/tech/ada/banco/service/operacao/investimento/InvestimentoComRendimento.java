@@ -28,5 +28,18 @@ public class InvestimentoComRendimento implements Investimento<ContaInvestimento
 		conta.setInvestimento(conta.getInvestimento().add(valor).add(conta.getRentabilidade().calcular(valor)));
 		repository.save(conta);
 	}
+
+	@Override
+	public void resgatar(BigDecimal valor, ContaInvestimento conta) throws SaldoIndisponivelException {
+		BigDecimal valorInvestido = conta.getInvestimento();
+		
+		if (valorInvestido.compareTo(valor)<0)
+			throw new SaldoIndisponivelException("Valor do resgate superior ao valor investido.");
+		
+		conta.setInvestimento(valorInvestido.subtract(valor));
+		conta.setSaldo(conta.getSaldo().add(valor));
+		
+		repository.save(conta);
+	}
 	
 }

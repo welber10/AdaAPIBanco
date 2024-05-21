@@ -10,4 +10,6 @@ public interface Investimento <T extends Conta> extends OperacaoBancaria {
 	
 	void investir(BigDecimal valor, T conta) throws SaldoIndisponivelException;
 
+	void resgatar(BigDecimal valor, T conta) throws SaldoIndisponivelException;
+
 }

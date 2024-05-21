@@ -148,6 +148,17 @@ public class OperacoesBancariasController {
         return new RendimentoInvestimentoPF();
     }
 
-    // TODO: RESGATAR INVESTIMENTO
+    @PutMapping("/resgatar/{valor}/{idContaInvestimento}")
+    @PreAuthorize("hasRole('CLIENTE')")
+    public ResponseEntity<HttpStatus> sacar(@PathVariable("valor") BigDecimal valor, @PathVariable("idContaInvestimento") Long idContaInvestimento, @RequestHeader(name="Authorization") String bearerToken) throws SaldoIndisponivelException, ValorInvalidoException {
+        var contaInvestimento = this.modelMapper.map(this.contaService.findById(idContaInvestimento), ContaInvestimento.class);
+       
+        if (isTitular((Usuario) jwtService.getUserDetails(bearerToken.substring(7)), contaInvestimento))
+            throw new AccessDeniedException(MSG_ACESSO_NEGADO_NAO_TITULAR);
+        
+        investimento.resgatar(valor, contaInvestimento);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
 }
