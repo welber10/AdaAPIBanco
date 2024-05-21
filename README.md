@@ -1,6 +1,12 @@
 # Sistema bancário
 Projeto final do módulo Arquitetura de Software I do treinamento de Arquitetura da ADA, cujo objetivo era criar uma aplicação onde seja possível, através de endpoints REST, fazer operações CRUD das entidades mencionadas abaixo e também algumas funcionalidades.
 
+## Desenvolvido com
+
+[![Java 17](https://img.shields.io/badge/Java-17-red.svg)](https://www.oracle.com/java/technologies/downloads/)
+[![Spring Boot 3](https://img.shields.io/badge/Spring_Boot-3.2.5-green.svg)](https://spring.io/projects/spring-boot)
+[![H2 Database](https://img.shields.io/badge/H2_Database-2.2.224-blue.svg)](https://www.h2database.com/html/main.html)
+
 ## Funcionalidades CRUD
 
 * <b>Segurança:</b> Roles com permissão para realizar as operações dos CRUDs: ADMIN E FUNCIONARIO
@@ -45,7 +51,7 @@ Realizar investimento de um valor disponível em uma conta investimento.
 
 ### Single Responsibility Principle, ou Princípio da Responsabilidade Única
 
-Classes: `Saque.java`
+Classes: [Saque.java](./src/main/java/tech/ada/banco/service/operacao/saque/Saque.java)
 
 No código um exemplo da aplicação desse princípio está presente nas operações bancárias.
 
@@ -59,7 +65,7 @@ Segue o método definido para essa interface.
 
 ### Open-closed principle, ou Princípio Aberto/Fechado ou ainda Princípio da Coesão
 
-Classes: `Saque.java`, `SaqueComTarifa.java`, `SaqueConta.java`, `Transferencia.java`, `TransferenciaBancaria.java`, `TransferenciaComTarifa.java`
+Classes: [Saque.java](./src/main/java/tech/ada/banco/service/operacao/saque/Saque.java), [SaqueComTarifa.java](./src/main/java/tech/ada/banco/service/operacao/saque/SaqueComTarifa.java), [SaqueConta.java](./src/main/java/tech/ada/banco/service/operacao/saque/SaqueConta.java), [Transferencia.java](./src/main/java/tech/ada/banco/service/operacao/transferencia/Transferencia.java), [TransferenciaBancaria.java](./src/main/java/tech/ada/banco/service/operacao/transferencia/TransferenciaBancaria.java), [TransferenciaComTarifa.java](./src/main/java/tech/ada/banco/service/operacao/transferencia/TransferenciaComTarifa.java)
 
 Esse princípio foi aplicado na resolução da regra de negócio seguinte:
 
@@ -71,7 +77,7 @@ Para implementar a regra de negócio de cobrança da taxa para PJ, no lugar de m
 
 ### Liskov Substitution Principle, ou Princípio da Substituição de Liskov
 
-Classes: `Saque.java`, `SaqueComTarifa.java`, `SaqueConta.java`
+Classes: [Saque.java](./src/main/java/tech/ada/banco/service/operacao/saque/Saque.java), [SaqueComTarifa.java](./src/main/java/tech/ada/banco/service/operacao/saque/SaqueComTarifa.java), [SaqueConta.java](./src/main/java/tech/ada/banco/service/operacao/saque/SaqueConta.java)
 
 Pelo princípio onde está declarada a interface Saque pode ser utilizado tanto o SaqueComTarifa, como o SaqueConta. Ou seja, qualquer das suas implementações pode ser utilizada.
 
@@ -79,7 +85,7 @@ Na classe `OperacoesBancariasController.java` é declarada a interface Saque que
 
 ### Interface Segregation Principle, ou Princípio da Segregação de Interfaces
 
-Classe: `TranferenciaComTarifa.java`
+Classe: [TransferenciaComTarifa.java](./src/main/java/tech/ada/banco/service/operacao/transferencia/TransferenciaComTarifa.java)
 
 ```java
 public class TransferenciaComTarifa implements Transferencia<Conta<?>>, Tarifavel
@@ -105,7 +111,7 @@ public interface Tarifavel {
 
 ### Dependency Inversion Principle, ou Princípio da Inversão de Dependências
 
-Classe: `OperacoesBancariasController.java`
+Classe: [OperacoesBancariasController.java](./src/main/java/tech/ada/banco/controller/OperacoesBancariasController.java)
 
 Nessa classe tem vários exemplos de aplicação desse princípio.
 
@@ -123,7 +129,7 @@ public class OperacoesBancariasController {
 }
 ```
 
-Classe: `TransferenciaComTarifa.java`
+Classe: [TransferenciaComTarifa.java](./src/main/java/tech/ada/banco/service/operacao/transferencia/TransferenciaComTarifa.java)
 
 Outro exemplo da aplicação desse conceito está na classe `TransferenciaComTarifa` que possui uma declaração da interface `Tarifa`, porém ela não sabe qual tarifa será injetada, pois foi aplicado o conceito de Inversão de Dependência. Portanto, na criação do objeto que será passada um implementação da Tarifa que será utilizada na operação, dando assim mais flexibilidade para essa operação.
 
@@ -150,7 +156,7 @@ A anotação `@Builder` do Lombok é uma forma de implementação do padrão de 
 public class Usuario implements UserDetails
 ```
 
-A utilização desse builder é demonstrada na classe `JWTService.java`.
+A utilização desse builder é demonstrada na classe [JWTService.java](./src/main/java/tech/ada/banco/service/login/JWTService.java).
 
 ```java
 public UserDetails getUserDetails(String token) {
@@ -177,7 +183,7 @@ Podemos observar que o Builder é utilizado para construir um Objeto UserDetails
 
 ### Singleton
 
-Classe: `ClienteService.java`
+Classe: [ClienteService.java](./src/main/java/tech/ada/banco/service/ClienteService.java)
 
 ```java
 @Service
@@ -198,7 +204,7 @@ Desta forma existe uma única instância desse Bean em memória que é provida t
 
 ### Facade
 
-Classe: `ClienteService.java`
+Classe: [ClienteService.java](./src/main/java/tech/ada/banco/service/ClienteService.java)
 
 ```java
 @Service
