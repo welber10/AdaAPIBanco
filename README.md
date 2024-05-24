@@ -57,10 +57,10 @@ No código um exemplo da aplicação desse princípio está presente nas operaç
 
 A interface `Saque` indica que a responsabilidade dessa operação é realizar o saque de um valor em uma conta. Assim todas as classes que implementam essa interface terão essa responsabilidade.
 
-Segue o método definido para essa interface.
+Segue o método definido para essa interface, linha 12.
 
 ```java
-	void sacar(BigDecimal valor, T conta) throws SaldoIndisponivelException, ValorInvalidoException;
+void sacar(BigDecimal valor, T conta) throws SaldoIndisponivelException, ValorInvalidoException;
 ```
 
 ### Open-closed principle, ou Princípio Aberto/Fechado ou ainda Princípio da Coesão
@@ -91,7 +91,7 @@ Classe: [TransferenciaComTarifa.java](./src/main/java/tech/ada/banco/service/ope
 public class TransferenciaComTarifa implements Transferencia<Conta<?>>, Tarifavel
 ```
 
-Essa classe ilustra bem esse princípio, pois utiliza a interface de `Transferencia`, porém o comportamento de ser tarifável não foi incluído na interface de `Transferencia` justamento por quebrar esse princípio. Foi realizada uma segreção de interfaces, com a criação da interface `Tarifavel` para implementação do comportamento de `calcularTarifa`.
+Essa classe ilustra bem esse princípio, pois utiliza a interface de [Transferencia](./src/main/java/tech/ada/banco/service/operacao/transferencia/Transferencia.java), porém o comportamento de ser tarifável não foi incluído na interface de [Transferencia](./src/main/java/tech/ada/banco/service/operacao/transferencia/Transferencia.java) justamento por quebrar esse princípio. Foi realizada uma segreção de interfaces, com a criação da interface [Tarifavel](./src/main/java/tech/ada/banco/service/operacao/tarifa/Tarifavel.java) para implementação do comportamento de `calcularTarifa`.
 
 ```java
 public interface Transferencia<T extends Conta<?>> extends OperacaoBancaria {
@@ -148,7 +148,7 @@ public class TransferenciaComTarifa implements Transferencia<Conta<?>>, Tarifave
 
 Classe: [Usuario.java](./src/main/java/tech/ada/banco/model/Usuario.java)
 
-A anotação `@Builder` do Lombok é uma forma de implementação do padrão de projeto Builder. No exemplo a seguir está sendo criado um Builder de Usuário.
+A anotação `@Builder` do Lombok (linha 30) é uma forma de implementação do padrão de projeto Builder. No exemplo a seguir está sendo criado um Builder de Usuário.
 
 ```java
 @Builder
@@ -156,7 +156,7 @@ A anotação `@Builder` do Lombok é uma forma de implementação do padrão de 
 public class Usuario implements UserDetails
 ```
 
-A utilização desse builder é demonstrada na classe [JWTService.java](./src/main/java/tech/ada/banco/service/login/JWTService.java).
+A utilização desse builder é demonstrada na classe [JWTService.java](./src/main/java/tech/ada/banco/service/login/JWTService.java), nas linhas 61 a 77.
 
 ```java
 public UserDetails getUserDetails(String token) {
@@ -193,15 +193,6 @@ public class ClienteService
 O Spring utiliza o padrão Singleton para os Beans declarados por exemplo com a anotação `@Service`.
 Desta forma existe uma única instância desse Bean em memória que é provida todas as vezes que é necessário utilizar os serviços providos por ele.
 
-
-### Factory Method
-
-### Proxy
-
-### Observer
-
-### Decorator
-
 ### Facade
 
 Classe: [ClienteService.java](./src/main/java/tech/ada/banco/service/ClienteService.java)
@@ -215,14 +206,11 @@ A anotação `@Service` implementa o padrão de projeto `Facade`.
 
 Essa anotação indica que a classe é uma `Business Service Facade`.
 
-### Template Method
-
-### Iterator
-
-Classe: 
-
 ### Chain of Responsability
-Uma implementação do Chain of Responsability está presente na classe JwtAuthFilter.
+
+Classe: [JwtAuthFilter.java](./src/main/java/tech/ada/banco/service/login/JwtAuthFilter.java)
+
+Uma implementação do Chain of Responsability está presente na classe JwtAuthFilter, nas linhas 23 a 32. Na linha 32 é realizada a chamada do próximo filtro da cadeia de filtros com a passagem dos dados de request e response, após o tratamento realizado de autenticação pelo JWT Token recebido no nó anterior da cadeia de filtros.
 
 ```java
 @Override
@@ -236,9 +224,53 @@ protected void doFilterInternal(HttpServletRequest request, HttpServletResponse 
     }
 ```
 
-### Strategy
+### Observer
 
-### 
+Classes: [InvestimentoEvent.java](./src/main/java/tech/ada/banco/service/operacao/investimento/InvestimentoEvent.java), [NotificaInvestimentoListener.java](./src/main/java/tech/ada/banco/service/operacao/investimento/NotificaInvestimentoListener.java), [InvestimentoComRendimento.java](./src/main/java/tech/ada/banco/service/operacao/investimento/InvestimentoComRendimento.java)
+
+Foi implementado o padrão Observer com a criação de um evento de investimento [InvestimentoEvent.java](./src/main/java/tech/ada/banco/service/operacao/investimento/InvestimentoEvent.java), linhas 10 a 22.
+
+```java
+@Getter
+public class InvestimentoEvent extends ApplicationEvent {
+
+    private final Conta conta;
+    private final BigDecimal valorInvestido; 
+
+    public InvestimentoEvent(Object source, Conta conta, BigDecimal valorInvestido) {
+        super(source);
+        this.conta = conta;
+        this.valorInvestido = valorInvestido;
+    }
+
+}
+```
+
+O evento é observado pela classe [NotificaInvestimentoListener.java](./src/main/java/tech/ada/banco/service/operacao/investimento/NotificaInvestimentoListener.java) que faz uma notificação de que houve um investimento no log da aplicação linhas 11 a 24, em uma aplicação real poderia ser o envio de um email ou Whatts para o cliente.
+
+```java
+@Component
+@Log
+public class NotificaInvestimentoListener {
+
+    @EventListener
+    public void handleInvestimentoEvent(InvestimentoEvent event) {
+        Conta conta = event.getConta();
+        BigDecimal valor = event.getValorInvestido();
+
+        log.info("Investimento no valor de " + valor.doubleValue() + " na conta investimento " + conta.getId());
+        log.info("Saldo pos investimento " + conta.getSaldo());
+    }
+
+}
+```
+
+O evento é sinalizado na classe [InvestimentoComRendimento.java](./src/main/java/tech/ada/banco/service/operacao/investimento/InvestimentoComRendimento.java), após a realização da operação de investimento na linha 32.
+
+```java
+eventPublisher.publishEvent(new InvestimentoEvent(this, conta, valor));
+```
+
 
 
 

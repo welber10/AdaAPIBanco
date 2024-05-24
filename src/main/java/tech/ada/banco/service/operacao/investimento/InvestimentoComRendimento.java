@@ -2,6 +2,7 @@ package tech.ada.banco.service.operacao.investimento;
 
 import java.math.BigDecimal;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,8 @@ public class InvestimentoComRendimento implements Investimento<ContaInvestimento
 
 	private final ContaRepository repository;
 
+	private final ApplicationEventPublisher eventPublisher;
+
 	@Override
 	public void investir(BigDecimal valor, ContaInvestimento conta) throws SaldoIndisponivelException {
 		BigDecimal saldoInicial = conta.getSaldo();
@@ -26,6 +29,7 @@ public class InvestimentoComRendimento implements Investimento<ContaInvestimento
 		
 		conta.setSaldo(saldoInicial.subtract(valor));
 		conta.setInvestimento(conta.getInvestimento().add(valor).add(conta.getRentabilidade().calcular(valor)));
+		eventPublisher.publishEvent(new InvestimentoEvent(this, conta, valor));
 		repository.save(conta);
 	}
 
